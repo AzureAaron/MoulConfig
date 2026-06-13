@@ -1,12 +1,12 @@
 package io.github.notenoughupdates.moulconfig.gui.component;
 
+import io.github.notenoughupdates.moulconfig.common.Pair;
 import io.github.notenoughupdates.moulconfig.gui.GuiComponent;
 import io.github.notenoughupdates.moulconfig.gui.GuiImmediateContext;
 import io.github.notenoughupdates.moulconfig.gui.KeyboardEvent;
 import io.github.notenoughupdates.moulconfig.gui.MouseEvent;
 import io.github.notenoughupdates.moulconfig.observer.GetSetter;
 import io.github.notenoughupdates.moulconfig.observer.ObservableList;
-import kotlin.Pair;
 import lombok.Getter;
 
 import java.awt.Color;
@@ -70,8 +70,8 @@ public class ArrayComponent<T> extends GuiComponent {
 
     public void foldWithContext(GuiImmediateContext context, ContextVisitor visitor) {
         foldChildren(new Pair<>(0, 0), (child, position) -> {
-            visitor.onContext(child, context.translated(0, position.getFirst(), child.getWidth(), child.getHeight()), position.getSecond());
-            return new Pair<>(child.getHeight() + position.getFirst(), position.getSecond() + 1);
+            visitor.onContext(child, context.translated(0, position.left(), child.getWidth(), child.getHeight()), position.right());
+            return new Pair<>(child.getHeight() + position.left(), position.right() + 1);
         });
     }
 

@@ -22,6 +22,7 @@ package io.github.notenoughupdates.moulconfig.gui.editors;
 
 import io.github.notenoughupdates.moulconfig.GuiTextures;
 import io.github.notenoughupdates.moulconfig.common.IMinecraft;
+import io.github.notenoughupdates.moulconfig.common.Pair;
 import io.github.notenoughupdates.moulconfig.common.RenderContext;
 import io.github.notenoughupdates.moulconfig.common.TextureFilter;
 import io.github.notenoughupdates.moulconfig.common.text.StructuredText;
@@ -29,7 +30,6 @@ import io.github.notenoughupdates.moulconfig.gui.GuiOptionEditor;
 import io.github.notenoughupdates.moulconfig.internal.KeybindHelper;
 import io.github.notenoughupdates.moulconfig.internal.TextRenderUtils;
 import io.github.notenoughupdates.moulconfig.processor.ProcessedOption;
-import kotlin.Pair;
 import lombok.val;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
@@ -70,8 +70,8 @@ public class GuiOptionEditorKeybindL extends GuiOptionEditor {
         renderContext.drawComplexTexture(GuiTextures.RESET, resetX, resetY, 10, 11, it -> it.filter(TextureFilter.NEAREST));
         // TODO: make use of the mouseX and mouseY from the context when switching this to a proper multi-version component
         if (lastMousePosition != null &&
-            lastMousePosition.getFirst() >= resetX && lastMousePosition.getFirst() < resetX + 10 &&
-            lastMousePosition.getSecond() >= resetY && lastMousePosition.getSecond() < resetY + 11) {
+            lastMousePosition.left() >= resetX && lastMousePosition.left() < resetX + 10 &&
+            lastMousePosition.right() >= resetY && lastMousePosition.right() < resetY + 11) {
             renderContext.scheduleDrawTooltip(
                 mc.getMouseX(), mc.getMouseY(),
                 Collections.singletonList(

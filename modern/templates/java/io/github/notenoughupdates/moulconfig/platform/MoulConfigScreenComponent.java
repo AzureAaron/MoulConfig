@@ -44,16 +44,16 @@ public class MoulConfigScreenComponent extends Screen {
         assert minecraft != null;
         var im = IMinecraft.INSTANCE;
         var mousePos = im.getMousePositionHF();
-        var x = mousePos.getFirst().intValue();
-        var y = mousePos.getSecond().intValue();
+        var x = mousePos.left().intValue();
+        var y = mousePos.right().intValue();
         return new GuiImmediateContext(
             new MoulConfigRenderContext(drawContext != null ? drawContext : MoulConfigPlatform.makeDrawContext()),
             0, 0,
             im.getScaledWidth(),
             im.getScaledHeight(),
             x, y, x, y,
-            mousePos.getFirst().floatValue(),
-            mousePos.getSecond().floatValue()
+            mousePos.left().floatValue(),
+            mousePos.right().floatValue()
         );
     }
 

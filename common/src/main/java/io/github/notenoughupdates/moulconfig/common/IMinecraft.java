@@ -10,7 +10,6 @@ import io.github.notenoughupdates.moulconfig.internal.MCLogger;
 import io.github.notenoughupdates.moulconfig.internal.Warnings;
 import io.github.notenoughupdates.moulconfig.processor.MoulConfigProcessor;
 import io.github.notenoughupdates.moulconfig.xml.XMLUniverse;
-import kotlin.Pair;
 import lombok.var;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -41,8 +40,8 @@ public interface IMinecraft {
     default Pair<Integer, Integer> getMousePosition() {
         var mousePositionHF = getMousePositionHF();
         return new Pair<>(
-                mousePositionHF.getFirst().intValue(),
-                mousePositionHF.getSecond().intValue());
+                mousePositionHF.left().intValue(),
+                mousePositionHF.right().intValue());
     }
 
     default int getMouseX() {
@@ -54,11 +53,11 @@ public interface IMinecraft {
     }
 
     default double getMouseXHF() {
-        return getMousePositionHF().getFirst();
+        return getMousePositionHF().left();
     }
 
     default double getMouseYHF() {
-        return getMousePositionHF().getSecond();
+        return getMousePositionHF().right();
     }
 
     boolean isDevelopmentEnvironment();

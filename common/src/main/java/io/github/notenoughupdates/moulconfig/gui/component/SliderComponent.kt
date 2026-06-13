@@ -5,8 +5,6 @@ import io.github.notenoughupdates.moulconfig.gui.GuiComponent
 import io.github.notenoughupdates.moulconfig.gui.GuiImmediateContext
 import io.github.notenoughupdates.moulconfig.gui.MouseEvent
 import io.github.notenoughupdates.moulconfig.observer.GetSetter
-import kotlin.math.max
-import kotlin.math.min
 
 open class SliderComponent(
     val value: GetSetter<Float>,
@@ -59,8 +57,8 @@ open class SliderComponent(
 
     open fun setValueFromContext(context: GuiImmediateContext) {
         var v: Float = context.mouseX * (maxValue - minValue) / context.width + minValue
-        v = min(v.toDouble(), maxValue.toDouble()).toFloat()
-        v = max(v.toDouble(), minValue.toDouble()).toFloat()
+        v = Math.min(v.toDouble(), maxValue.toDouble()).toFloat()
+        v = Math.max(v.toDouble(), minValue.toDouble()).toFloat()
         v = Math.round(v / minStep) * minStep
         value.set(v)
     }

@@ -2,8 +2,6 @@ package io.github.notenoughupdates.moulconfig
 
 import com.google.gson.annotations.Expose
 import java.awt.Color
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
 @Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
 data class ChromaColour(
@@ -36,7 +34,7 @@ data class ChromaColour(
 ) {
 
     private fun evaluateColourWithShift(hueShift: Double): Int {
-        if (abs(cachedRGBHueOffset - hueShift) < 1 / 360.0) return cachedRGB
+        if (Math.abs(cachedRGBHueOffset - hueShift) < 1 / 360.0) return cachedRGB
         val effectiveHue = ((hue.toDouble() + hueShift) % 1).toFloat()
         val ret = (Color.HSBtoRGB(effectiveHue, saturation, brightness) and 0x00FFFFFF) or (alpha shl 24)
         cachedRGBHueOffset = hueShift
@@ -176,7 +174,7 @@ data class ChromaColour(
 
         @Deprecated("")
         fun getSpeedForMillis(seconds: Float): Int {
-            return (255 - ((seconds - MIN_CHROMA_SECS) / (MAX_CHROMA_SECS - MIN_CHROMA_SECS) * 254)).roundToInt()
+            return Math.round(255 - ((seconds - MIN_CHROMA_SECS) / (MAX_CHROMA_SECS - MIN_CHROMA_SECS) * 254))
         }
 
         @JvmStatic

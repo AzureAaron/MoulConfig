@@ -22,6 +22,7 @@ package io.github.notenoughupdates.moulconfig.gui.editors;
 
 import io.github.notenoughupdates.moulconfig.GuiTextures;
 import io.github.notenoughupdates.moulconfig.common.IMinecraft;
+import io.github.notenoughupdates.moulconfig.common.Pair;
 import io.github.notenoughupdates.moulconfig.common.text.StructuredText;
 import io.github.notenoughupdates.moulconfig.gui.GuiComponent;
 import io.github.notenoughupdates.moulconfig.gui.GuiImmediateContext;
@@ -30,7 +31,6 @@ import io.github.notenoughupdates.moulconfig.gui.component.*;
 import io.github.notenoughupdates.moulconfig.internal.*;
 import io.github.notenoughupdates.moulconfig.observer.GetSetter;
 import io.github.notenoughupdates.moulconfig.processor.ProcessedOption;
-import kotlin.Pair;
 import lombok.var;
 import org.jetbrains.annotations.NotNull;
 
@@ -121,7 +121,7 @@ public class GuiOptionEditorDraggableList extends ComponentEditor {
                             var pos = IMinecraft.INSTANCE.getMousePosition();
                             if (activeText.size() == exampleText.size())
                                 return;
-                            openDropDownOverlay(pos.getFirst(), pos.getSecond());
+                            openDropDownOverlay(pos.left(), pos.right());
                         }),
                         new SpacerComponent(GetSetter.constant(5), GetSetter.constant(0)),
                         new GuiComponent() {
@@ -303,10 +303,10 @@ public class GuiOptionEditorDraggableList extends ComponentEditor {
 
     private void reorderElements(int width, int mouseX, int mouseY) {
         assert lastListRenderPos != null;
-        int renderX = lastListRenderPos.getFirst();
+        int renderX = lastListRenderPos.left();
         if (mouseX < renderX || mouseX > renderX + width)
             return;
-        int renderY = lastListRenderPos.getSecond();
+        int renderY = lastListRenderPos.right();
         var fr = IMinecraft.INSTANCE.getDefaultFontRenderer();
         int i = 0;
         int yOff = renderY;

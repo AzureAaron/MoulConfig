@@ -22,7 +22,6 @@ package io.github.notenoughupdates.moulconfig.gui.editors;
 
 import io.github.notenoughupdates.moulconfig.Config;
 import io.github.notenoughupdates.moulconfig.GuiTextures;
-import io.github.notenoughupdates.moulconfig.common.IMinecraft;
 import io.github.notenoughupdates.moulconfig.common.text.StructuredText;
 import io.github.notenoughupdates.moulconfig.gui.GuiComponent;
 import io.github.notenoughupdates.moulconfig.gui.GuiImmediateContext;
@@ -30,15 +29,11 @@ import io.github.notenoughupdates.moulconfig.gui.MouseEvent;
 import io.github.notenoughupdates.moulconfig.internal.TypeUtils;
 import io.github.notenoughupdates.moulconfig.internal.Warnings;
 import io.github.notenoughupdates.moulconfig.processor.ProcessedOption;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
-import kotlin.reflect.KFunction;
 import lombok.Getter;
 import lombok.val;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Locale;
 import java.util.Objects;
@@ -53,9 +48,23 @@ public class GuiOptionEditorButton extends ComponentEditor {
         KRUNNABLE() {
             @Override
             void dispatch(GuiOptionEditorButton $this) {
-                var v = ((Function0<?>) $this.option.get()).invoke();
-                if (!Objects.equals(v, Unit.INSTANCE))
-                    Warnings.warn("KRunnable dispatch of button " + $this.getDebugDeclarationLocation() + " returned non unit value " + v);
+                try {
+                    // Invoke function
+                    Object functionInstance = $this.option.get();
+                    Method invokeMethod = functionInstance.getClass().getMethod("invoke");
+                    Object voidResult = invokeMethod.invoke(functionInstance);
+
+                    // Check for unit value
+                    Class<?> unitClass = Class.forName("kotlin.Unit");
+                    Object unitInstance = unitClass.getField("INSTANCE").get(null);
+
+                    if (!Objects.equals(voidResult, unitInstance)) {
+                        Warnings.warn("KRunnable dispatch of button " + $this.getDebugDeclarationLocation() + " returned non unit value " + voidResult);
+                    }
+                } catch (Exception e) {
+                    Warnings.warn("Failed to use Kotlin library reflection");
+                    e.printStackTrace();
+                }
             }
         },
 
@@ -91,7 +100,7 @@ public class GuiOptionEditorButton extends ComponentEditor {
         Type type = option.getType();
         if (TypeUtils.doesAExtendB(type, Runnable.class)) {
             dispatchStyle = DispatchStyle.RUNNABLE;
-        } else if (TypeUtils.doesAExtendB(type, Function0.class)) {
+        } else if (getKotlinFunction0Class() != null && TypeUtils.doesAExtendB(type, getKotlinFunction0Class())) {
             dispatchStyle = DispatchStyle.KRUNNABLE;
         } else {
             dispatchStyle = DispatchStyle.BY_ID;
@@ -102,6 +111,14 @@ public class GuiOptionEditorButton extends ComponentEditor {
         if (this.buttonText == null) {
             Warnings.warn("Empty button text by " + getDebugDeclarationLocation());
             this.buttonText = StructuredText.empty();
+        }
+    }
+
+    private static Class<?> getKotlinFunction0Class() {
+        try {
+            return Class.forName("kotlin.jvm.functions.Function0");
+        } catch (Exception e) {
+            return null;
         }
     }
 

@@ -11,8 +11,6 @@ import io.github.notenoughupdates.moulconfig.gui.MouseEvent
 import io.github.notenoughupdates.moulconfig.gui.MouseEvent.Click
 import io.github.notenoughupdates.moulconfig.observer.GetSetter
 import java.util.function.Supplier
-import kotlin.math.max
-import kotlin.math.min
 
 open class TextFieldComponent(
     val text: GetSetter<String>,
@@ -29,7 +27,7 @@ open class TextFieldComponent(
     private var shouldExpandToFit = false
     private var initializedCursor = false
     override fun getWidth(): Int {
-        if (isFocused && shouldExpandToFit) return max(preferredWidth, font.getStringWidth(StructuredText.of(text.get())) + 10)
+        if (isFocused && shouldExpandToFit) return Math.max(preferredWidth, font.getStringWidth(StructuredText.of(text.get())) + 10)
         return preferredWidth
     }
 
@@ -54,7 +52,7 @@ open class TextFieldComponent(
     open fun checkScrollOffset(width: Int) {
         val text = text.get()
         val rightMostScrollOffset = text.length - font.trimStringToWidth(text, width - TEXT_PADDING_X * 2, true).length
-        scrollOffset = max(0, min(rightMostScrollOffset, scrollOffset))
+        scrollOffset = Math.max(0, Math.min(rightMostScrollOffset, scrollOffset))
     }
 
     fun updateVisibleText(width: Int) {
@@ -86,17 +84,17 @@ open class TextFieldComponent(
     }
 
     open fun validateCursor() {
-        cursor = max(0, min(text.get().length, cursor))
+        cursor = Math.max(0, Math.min(text.get().length, cursor))
     }
 
     private fun renderSelection(context: GuiImmediateContext) {
         if (selection == cursor || selection == -1) return
-        val left = min(cursor, selection)
-        val right = max(cursor, selection)
+        val left = Math.min(cursor, selection)
+        val right = Math.max(cursor, selection)
         if (right < scrollOffset || left > scrollOffset + visibleText!!.length) return
-        val normalizedLeft = max(scrollOffset, left) - scrollOffset
+        val normalizedLeft = Math.max(scrollOffset, left) - scrollOffset
         val normalizedRight =
-            min(scrollOffset + visibleText!!.length, right) - scrollOffset
+            Math.min(scrollOffset + visibleText!!.length, right) - scrollOffset
         val leftPos = font.getStringWidth(safeSubString(visibleText!!, 0, normalizedLeft))
         val rightPos = leftPos + font.getStringWidth(safeSubString(visibleText!!, normalizedLeft, normalizedRight))
         context.renderContext.invertedRect(
@@ -247,8 +245,8 @@ open class TextFieldComponent(
 
     private fun getSelection(): String {
         if (selection == -1) return ""
-        val l = min(cursor, selection)
-        val r = max(cursor, selection)
+        val l = Math.min(cursor, selection)
+        val r = Math.max(cursor, selection)
         return safeSubString(text.get(), l, r)
     }
 
@@ -278,13 +276,13 @@ open class TextFieldComponent(
     }
 
     private fun safeSubString(str: String, startIndex: Int): String {
-        return str.substring(min(startIndex, str.length))
+        return str.substring(Math.min(startIndex, str.length))
     }
 
     private fun safeSubString(str: String, startIndex: Int, endIndex: Int): String {
         return str.substring(
-            min(startIndex, str.length),
-            min(max(startIndex, endIndex), str.length)
+            Math.min(startIndex, str.length),
+            Math.min(Math.max(startIndex, endIndex), str.length)
         )
     }
 
@@ -301,8 +299,8 @@ open class TextFieldComponent(
             text.set(safeSubString(t, 0, cursor) + filteredString + safeSubString(t, cursor))
             cursor += filteredString.length
         } else {
-            val l = min(cursor, selection)
-            val r = max(cursor, selection)
+            val l = Math.min(cursor, selection)
+            val r = Math.max(cursor, selection)
             text.set(safeSubString(t, 0, l) + filteredString + safeSubString(t, r))
             cursor = l + filteredString.length
             selection = -1
@@ -317,9 +315,9 @@ open class TextFieldComponent(
         } else {
             if (selection != -1) {
                 cursor = if (i < 0)
-                    min(cursor, selection)
+                    Math.min(cursor, selection)
                 else
-                    max(cursor, selection)
+                    Math.max(cursor, selection)
                 selection = -1
             } else {
                 cursor = skipCharacters(context.renderContext.isLogicalCtrlDown, i)
